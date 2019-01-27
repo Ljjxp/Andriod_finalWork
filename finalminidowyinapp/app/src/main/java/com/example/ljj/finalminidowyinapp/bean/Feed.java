@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Feed {
     @SerializedName("student_id")
     String student_id;
-    @SerializedName("username")
+    @SerializedName("user_name")
     String userName;
     @SerializedName("image_url")
     String image_url;

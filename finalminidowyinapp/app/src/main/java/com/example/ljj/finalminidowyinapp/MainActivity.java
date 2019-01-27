@@ -1,6 +1,7 @@
 package com.example.ljj.finalminidowyinapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -9,24 +10,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ljj.finalminidowyinapp.Adapter.easyAdapter;
+import com.example.ljj.finalminidowyinapp.Adapter.recyclerViewAdapter;
 import com.example.ljj.finalminidowyinapp.bean.Feed;
 import com.example.ljj.finalminidowyinapp.bean.FeedResponse;
 import com.example.ljj.finalminidowyinapp.bean.PostVideoResponse;
 import com.example.ljj.finalminidowyinapp.newtork.IMiniDouyinService;
 import com.example.ljj.finalminidowyinapp.newtork.RetrofitManager;
 import com.example.ljj.finalminidowyinapp.utils.ResourceUtils;
+import com.example.ljj.finalminidowyinapp.OnClick.RecyclerViewClickListener;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements recyclerViewAdapter.ListItemClickListener, easyAdapter.ListItemClickListener, RecyclerViewClickListener.OnItem2ClickListener{
 
     private static final int PICK_IMAGE = 1;
     private static final int PICK_VIDEO = 2;
@@ -47,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private Uri mSelectedVideo;
     public Button mBtn;
     private Button mBtnRefresh;
+
+    private recyclerViewAdapter mAdapter;
+    private easyAdapter mmAdapter;
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+
 
     private String[] PERMISSIONS_STORAGE = {
             Manifest.permission.RECORD_AUDIO,
@@ -68,23 +80,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void initButtonSelect() {
         mBtn = findViewById(R.id.btn);
-        mBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = mBtn.getText().toString();
-                if (getString(R.string.select_an_image).equals(s)) {
-                    chooseImage();
-                } else if (getString(R.string.select_a_video).equals(s)) {
-                    chooseVideo();
-                } else if (getString(R.string.post_it).equals(s)) {
-                    if (mSelectedVideo != null && mSelectedImage != null) {
-                        postVideo();
-                    } else {
-                        throw new IllegalArgumentException("error data uri, mSelectedVideo = " + mSelectedVideo + ", mSelectedImage = " + mSelectedImage);
-                    }
-                } else if ((getString(R.string.success_try_refresh).equals(s))) {
-                    mBtn.setText(R.string.select_an_image);
+        mBtn.setOnClickListener(v -> {
+            String s = mBtn.getText().toString();
+            if (getString(R.string.select_an_image).equals(s)) {
+                chooseImage();
+            } else if (getString(R.string.select_a_video).equals(s)) {
+                chooseVideo();
+            } else if (getString(R.string.post_it).equals(s)) {
+                if (mSelectedVideo != null && mSelectedImage != null) {
+                    postVideo();
+                } else {
+                    throw new IllegalArgumentException("error data uri, mSelectedVideo = " + mSelectedVideo + ", mSelectedImage = " + mSelectedImage);
                 }
+            } else if ((getString(R.string.success_try_refresh).equals(s))) {
+                mBtn.setText(R.string.select_an_image);
             }
         });
 
@@ -93,36 +102,64 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         mRv = findViewById(R.id.rv);
-        mRv.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRv.setLayoutManager(layoutManager);
+        mRv.setHasFixedSize(true);
+        mAdapter = new recyclerViewAdapter(this, mFeeds);
+        mmAdapter = new easyAdapter(this, mFeeds);
         mRv.setAdapter(new RecyclerView.Adapter() {
-            @NonNull
-            @Override
+            @NonNull @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                ImageView imageView = new ImageView(viewGroup.getContext());
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                imageView.setAdjustViewBounds(true);
-                return new MainActivity.MyViewHolder(imageView);
+                Context context = viewGroup.getContext();
+                int layoutIdForListItem = R.layout.activity_myadapter;
+                boolean shouldAttachToParentImmediately = false;
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+                return new MyViewHolder(view);
             }
 
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                ImageView iv = (ImageView) viewHolder.itemView;
-                String url = mFeeds.get(i).getImage_url();
-                Glide.with(iv.getContext()).load(url).into(iv);
+                ImageView iv = (ImageView) viewHolder.itemView.findViewById(R.id.pic_url);
+                Glide.with(iv.getContext()).load(mFeeds.get(i).getImage_url()).into(iv);
             }
 
-            @Override
-            public int getItemCount() {
+            @Override public int getItemCount() {
                 return mFeeds.size();
             }
         });
+
+        mRv.addOnItemTouchListener(new RecyclerViewClickListener(this, mRv, this));
+
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onItemClick(View view, int position) {
+        TextView tx = findViewById(R.id.zz);
+        tx.setText(mFeeds.get(position).getUserName());
+        tx.bringToFront();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, videoActivity.class);
+        intent.putExtra("url",mFeeds.get(position).getVideo_url());
+        startActivity(intent);
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
         }
     }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        startActivity(new Intent(MainActivity.this, videoActivity.class));
+    }
+
 
     private void chooseImage() {
         Intent intent = new Intent();
@@ -165,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     private void postVideo() {
         mBtn.setText("POSTING...");
         mBtn.setEnabled(false);
-        RetrofitManager.get(IMiniDouyinService.HOST).create(IMiniDouyinService.class).createVideo("2220186666", "doudou", getMultipartFromUri("cover_image", mSelectedImage), getMultipartFromUri("video", mSelectedVideo)).enqueue(new Callback<PostVideoResponse>() {
+        RetrofitManager.get(IMiniDouyinService.HOST).create(IMiniDouyinService.class).createVideo("1120171615", "jj", getMultipartFromUri("cover_image", mSelectedImage), getMultipartFromUri("video", mSelectedVideo)).enqueue(new Callback<PostVideoResponse>() {
             @Override
             public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response) {
                 String toast;
@@ -213,6 +250,11 @@ public class MainActivity extends AppCompatActivity {
                 mBtnRefresh.setEnabled(true);
             }
         });
+    }
+
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view ,int section,int position);
+        void onItemLongClick(View view ,int section,int position);
     }
 
 }
