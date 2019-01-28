@@ -1,6 +1,7 @@
 package com.example.ljj.finalminidowyinapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -94,7 +95,9 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
         });
 
         findViewById(R.id.btn_record).setOnClickListener(v -> {
+            Button bt = findViewById(R.id.btn_record);
             if (isRecording) {
+                bt.setTextColor(Color.rgb(255,255,255));
                 mMediaRecorder.stop();
                 mMediaRecorder.reset();
                 mMediaRecorder.release();
@@ -102,6 +105,7 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
                 mCamera.lock();
                 isRecording = false;
             } else {
+                bt.setTextColor(Color.rgb(255,22,22));
                 mMediaRecorder = new MediaRecorder();
                 mCamera.unlock();
                 mMediaRecorder.setCamera(mCamera);

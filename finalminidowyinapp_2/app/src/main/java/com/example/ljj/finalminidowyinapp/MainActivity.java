@@ -11,13 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ViewGroup.LayoutParams;
 
 import com.bumptech.glide.Glide;
 import com.example.ljj.finalminidowyinapp.bean.Feed;
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         mRv = findViewById(R.id.rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRv.setLayoutManager(layoutManager);
+        mRv.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         mRv.setHasFixedSize(true);
         mRv.setAdapter(new RecyclerView.Adapter() {
             @NonNull @Override
@@ -112,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 ImageView iv = (ImageView) viewHolder.itemView.findViewById(R.id.pic_url);
                 Glide.with(iv.getContext()).load(mFeeds.get(i).getImage_url()).into(iv);
+                TextView tx = viewHolder.itemView.findViewById(R.id.zz_name_2);
+                tx.setText("@ " + mFeeds.get(i).getUserName());
             }
 
             @Override public int getItemCount() {
@@ -125,8 +133,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
     @Override
     public void onItemClick(View view, int position) {
-        TextView tx = findViewById(R.id.zz_name);
-        tx.setText("@ " + mFeeds.get(position).getUserName());
+        ImageView iv = (ImageView) view.findViewById(R.id.heart);
+        iv.setImageDrawable(this.getResources().getDrawable(R.drawable.heart_red));
     }
 
     @Override
