@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
 import com.bumptech.glide.Glide;
+import com.example.ljj.finalminidowyinapp.OnClick.MyClickListener;
+import com.example.ljj.finalminidowyinapp.clickLove.LoveAnimator;
 import com.example.ljj.finalminidowyinapp.bean.Feed;
 import com.example.ljj.finalminidowyinapp.bean.FeedResponse;
 import com.example.ljj.finalminidowyinapp.bean.PostVideoResponse;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     private Uri mSelectedVideo;
     public Button mBtn;
     private Button mBtnRefresh;
+    private LoveAnimator loveAnimator;
 
 
     private String[] PERMISSIONS_STORAGE = {
@@ -69,6 +73,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         setContentView(R.layout.activity_main);
         initRecyclerView();
         initButtonSelect();
+        initFilm();
+        initAnimator();
+    }
+
+    private void initAnimator() {
+        loveAnimator = findViewById(R.id.loveAnimator);
+        loveAnimator.setOnClickListener(new MyClickListener.MyClickCallBack() {
+            @Override
+            public void oneClick() {
+
+            }
+
+            @Override
+            public void doubleClick() {
+
+            }
+        });
+    }
+
+    private void initFilm() {
         findViewById(R.id.btn_film).setOnClickListener(v -> {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
             startActivity(new Intent(MainActivity.this, cameraActivity.class));

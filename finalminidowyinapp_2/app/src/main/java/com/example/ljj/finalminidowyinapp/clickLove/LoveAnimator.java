@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.ljj.finalminidowyinapp.OnClick.MyClickListener;
 import com.example.ljj.finalminidowyinapp.R;
 
 import java.util.Random;
@@ -28,6 +29,12 @@ public class LoveAnimator extends RelativeLayout {
 
   private Context mContext;
   final float[] num = {-30, -20, 0, 20, 30}; // 随机心形图片的角度
+
+  private long  lastClickTime = 0;
+
+  private long INTERVAL = 200;
+
+  private MyClickListener.MyClickCallBack onClickListener;
 
   public LoveAnimator(Context context) {
     this(context, null);
@@ -59,7 +66,12 @@ public class LoveAnimator extends RelativeLayout {
   @SuppressLint("ClickableViewAccessibility")
   @Override
   public boolean onTouchEvent(MotionEvent event) {
-
+    switch (event.getAction()){
+      case MotionEvent.ACTION_DOWN:
+      long currTime = System.currentTimeMillis();
+      long interval = currTime - lastClickTime;
+      lastClickTime = currTime;
+      if(interval < INTERVAL){
     // 首先，我们需要在触摸事件中做监听，当有触摸时，创建一个展示心形图片的 ImageView
     final ImageView imageView = new ImageView(mContext);
 
@@ -94,6 +106,9 @@ public class LoveAnimator extends RelativeLayout {
         removeViewInLayout(imageView);
       }
     });
+      }
+      break;
+    }
     return super.onTouchEvent(event);
   }
 
@@ -148,5 +163,13 @@ public class LoveAnimator extends RelativeLayout {
       }
     });
     return rotation;
+  }
+
+
+  public void setOnClickListener(MyClickListener.MyClickCallBack onClickListener) {
+    this.onClickListener = onClickListener;
+  }
+  public MyClickListener.MyClickCallBack getOnClickListener() {
+    return onClickListener;
   }
 }

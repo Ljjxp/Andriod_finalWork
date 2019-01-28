@@ -16,6 +16,8 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,10 +29,11 @@ import static com.example.ljj.finalminidowyinapp.utils.Utils.MEDIA_TYPE_IMAGE;
 import static com.example.ljj.finalminidowyinapp.utils.Utils.MEDIA_TYPE_VIDEO;
 import static com.example.ljj.finalminidowyinapp.utils.Utils.getOutputMediaFile;
 
-public class cameraActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+public class cameraActivity extends AppCompatActivity implements SurfaceHolder.Callback, SeekBar.OnSeekBarChangeListener {
 
     private SurfaceView mSurfaceView;
     private Camera mCamera;
+    private SeekBar sb;
 
     private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
 
@@ -71,6 +74,24 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
                 mCamera = null;
             }
         });
+
+
+        if (mCamera.getParameters().isSmoothZoomSupported()){
+            Toast.makeText(this,"Zoom:Error!",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else {
+            try {
+                sb = findViewById(R.id.sb_zoom);
+                sb.setOnSeekBarChangeListener(this);
+                Camera.Parameters params = mCamera.getParameters();
+                final int MAX = params.getMaxZoom();
+                sb.setMax(MAX);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
 
         findViewById(R.id.btn_back1).setOnClickListener(v -> {
             startActivity(new Intent(this,MainActivity.class));
@@ -130,8 +151,6 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
         findViewById(R.id.btn_facing).setOnClickListener(v -> {
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
             int cameraCount = Camera.getNumberOfCameras();
-            Button bt = findViewById(R.id.btn_zoom);
-            bt.setText("ZOOM");
             for(int i=0; i<cameraCount; i++){
                 Camera.getCameraInfo(i, cameraInfo);
                 if (cameraPosition[0] == 1){
@@ -167,32 +186,6 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
             }
         });
 
-        findViewById(R.id.btn_zoom).setOnClickListener(v -> {
-            if (mCamera.getParameters().isSmoothZoomSupported()){
-                Button bt = findViewById(R.id.btn_zoom);
-                bt.setText("Zoom:Error!");
-                return;
-            }
-            else {
-                try {
-                    Camera.Parameters params = mCamera.getParameters();
-                    final int MAX = params.getMaxZoom();
-                    if (MAX == 0) return;
-
-                    int zoomValue = params.getZoom();
-                    zoomValue += 5;
-                    if(zoomValue >= MAX) zoomValue = 0;
-                    Button bt = findViewById(R.id.btn_zoom);
-                    bt.setText("Zoom:" + String.valueOf(zoomValue) + "/180");
-                    params.setZoom(zoomValue);
-                    mCamera.setParameters(params);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public Camera getCamera(int position) {
@@ -335,4 +328,18 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
         return optimalSize;
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Camera.Parameters params = mCamera.getParameters();
+        params.setZoom(progress);
+        mCamera.setParameters(params);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 }

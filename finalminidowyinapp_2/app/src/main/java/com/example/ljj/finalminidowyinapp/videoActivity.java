@@ -64,10 +64,8 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
             if (currentState != PAUSING) {
                 mMediapPlayer.start();
                 currentState = PLAYING;
-                //每次在调用刷新线程时，都要设为false
                 isStopUpdatingProgress = false;
                 return;
-                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
             } else if (currentState == STOPING) {
                 mMediapPlayer.reset();
                 mMediapPlayer.release();
@@ -88,9 +86,7 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         String path = intent.getStringExtra("url");
         mMediapPlayer = new MediaPlayer();
         try {
-            //设置数据类型
             mMediapPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            //设置以下播放器显示的位置
             mMediapPlayer.setDisplay(holder);
 
             mMediapPlayer.setDataSource(path);
@@ -98,14 +94,10 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
             mMediapPlayer.start();
 
             mMediapPlayer.setOnCompletionListener(this);
-            //把当前播放器的状诚置为：播放中
             currentState = PLAYING;
 
-            //把音乐文件的总长度取出来，设置给seekbar作为最大值
-            //总时长
             int duration = mMediapPlayer.getDuration();
             mSeekbar.setMax(duration);
-            //把总时间显示textView上
             int m = duration / 1000 / 60;
             int s = duration / 1000 % 60;
             tvTotalTime.setText("/" + m + ":" + s);
