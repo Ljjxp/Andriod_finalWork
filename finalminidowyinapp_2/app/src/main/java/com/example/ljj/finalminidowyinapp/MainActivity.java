@@ -44,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements recyclerViewAdapter.ListItemClickListener, easyAdapter.ListItemClickListener, RecyclerViewClickListener.OnItem2ClickListener{
+public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener.OnItem2ClickListener{
 
     private static final int PICK_IMAGE = 1;
     private static final int PICK_VIDEO = 2;
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
                 }
             } else if ((getString(R.string.success_try_refresh).equals(s))) {
                 mBtn.setText(R.string.select_an_image);
+                mBtn.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.picture));
             }
         });
-
         mBtnRefresh = findViewById(R.id.btn_refresh);
     }
 
@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRv.setLayoutManager(layoutManager);
         mRv.setHasFixedSize(true);
-        mAdapter = new recyclerViewAdapter(this, mFeeds);
-        mmAdapter = new easyAdapter(this, mFeeds);
         mRv.setAdapter(new RecyclerView.Adapter() {
             @NonNull @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -135,9 +133,8 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
 
     @Override
     public void onItemClick(View view, int position) {
-        TextView tx = findViewById(R.id.zz);
-        tx.setText(mFeeds.get(position).getUserName());
-        tx.bringToFront();
+        TextView tx = findViewById(R.id.zz_name);
+        tx.setText("@ " + mFeeds.get(position).getUserName());
     }
 
     @Override
@@ -152,11 +149,6 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
         }
-    }
-
-    @Override
-    public void onListItemClick(int clickedItemIndex) {
-        startActivity(new Intent(MainActivity.this, videoActivity.class));
     }
 
 
@@ -185,21 +177,24 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
             if (requestCode == PICK_IMAGE) {
                 mSelectedImage = data.getData();
                 mBtn.setText(R.string.select_a_video);
+                mBtn.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.video));
             } else if (requestCode == PICK_VIDEO) {
                 mSelectedVideo = data.getData();
                 mBtn.setText(R.string.post_it);
+                mBtn.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.post));
             }
         }
     }
 
     private MultipartBody.Part getMultipartFromUri(String name, Uri uri) {
-        File f = new File(ResourceUtils.getRealPath(MainActivity.this, uri));
+        File f = new File(ResourceUtils.getRealPath(this, uri));
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
         return MultipartBody.Part.createFormData(name, f.getName(), requestFile);
     }
 
     private void postVideo() {
         mBtn.setText("POSTING...");
+        mBtn.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.is_waiting));
         mBtn.setEnabled(false);
         RetrofitManager.get(IMiniDouyinService.HOST).create(IMiniDouyinService.class).createVideo("1120171615", "jj", getMultipartFromUri("cover_image", mSelectedImage), getMultipartFromUri("video", mSelectedVideo)).enqueue(new Callback<PostVideoResponse>() {
             @Override
@@ -208,9 +203,11 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
                 if (response.isSuccessful()) {
                     toast = "Post Success!";
                     mBtn.setText(R.string.success_try_refresh);
+                    mBtn.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.gou));
                 } else {
-                    toast = "Post Failure...";
+                    toast = "Post Failure... Please try again!";
                     mBtn.setText(R.string.post_it);
+                    mBtn.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.iscross));
                 }
                 Toast.makeText(MainActivity.this, toast, Toast.LENGTH_LONG).show();
                 mBtn.setEnabled(true);
@@ -219,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
             @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                 mBtn.setText(R.string.post_it);
+                mBtn.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.iscross));
                 mBtn.setEnabled(true);
             }
         });
@@ -226,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
 
     public void fetchFeed(View view) {
         mBtnRefresh.setText("requesting...");
+        mBtnRefresh.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.is_waiting));
         mBtnRefresh.setEnabled(false);
         RetrofitManager.get(IMiniDouyinService.HOST).create(IMiniDouyinService.class).fetchFeed().enqueue(new Callback<FeedResponse>() {
             @Override
@@ -235,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
                     mRv.getAdapter().notifyDataSetChanged();
                 } else {
                     Toast.makeText(MainActivity.this, "fetch feed failure!", Toast.LENGTH_LONG).show();
+                    mBtnRefresh.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.iscross));
                 }
                 resetBtn();
             }
@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements recyclerViewAdapt
 
             private void resetBtn() {
                 mBtnRefresh.setText(R.string.refresh_feed);
+                mBtnRefresh.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.refresh));
                 mBtnRefresh.setEnabled(true);
             }
         });

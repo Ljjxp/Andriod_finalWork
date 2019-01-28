@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.example.ljj.finalminidowyinapp.videoActivity">
+
+    <SurfaceView
+        android:id="@+id/surfaceview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:orientation="horizontal"
+        android:background="@color/colorBackground"
+        android:alpha="0.3"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="start"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/play" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="pause"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/pause" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="stop"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/stop" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="restart"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/restart" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="35dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <SeekBar
+            android:id="@+id/sb_progress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="#FF0000" />
+
+        <TextView
+            android:id="@+id/tv_total_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/00:00"
+            android:textColor="#FF0000" />
+    </LinearLayout>
+
+    <com.example.ljj.finalminidowyinapp.clickLove.LoveAnimator
+        android:id="@+id/loveAnimator"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp" />
+
+</RelativeLayout>

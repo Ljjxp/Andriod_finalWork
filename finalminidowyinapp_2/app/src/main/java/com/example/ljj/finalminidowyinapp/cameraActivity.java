@@ -1,10 +1,8 @@
 package com.example.ljj.finalminidowyinapp;
 
-import android.content.Intent;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,26 +12,12 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-
-import com.example.ljj.finalminidowyinapp.MainActivity;
-import com.example.ljj.finalminidowyinapp.bean.PostVideoResponse;
-import com.example.ljj.finalminidowyinapp.newtork.IMiniDouyinService;
-import com.example.ljj.finalminidowyinapp.newtork.RetrofitManager;
-import com.example.ljj.finalminidowyinapp.utils.ResourceUtils;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.example.ljj.finalminidowyinapp.utils.Utils.MEDIA_TYPE_IMAGE;
 import static com.example.ljj.finalminidowyinapp.utils.Utils.MEDIA_TYPE_VIDEO;
@@ -49,10 +33,6 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
     private boolean isRecording = false;
 
     private int rotationDegree = 0;
-    private static final int PICK_IMAGE = 1;
-    private static final int PICK_VIDEO = 2;
-    public Uri mSelectedImage;
-    private Uri mSelectedVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +41,6 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_camera);
-
-        Button mBtn = findViewById(R.id.btn_select);
-        initButtonSelect(mBtn);
-
         mCamera = getCamera(CAMERA_TYPE);
         mSurfaceView = findViewById(R.id.img);
         SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
@@ -346,73 +322,6 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
             }
         }
         return optimalSize;
-    }
-
-    private void initButtonSelect(Button mBtn) {
-        mBtn.setOnClickListener(v -> {
-            String s = mBtn.getText().toString();
-            if (getString(R.string.select_an_image).equals(s)) {
-                chooseImage();
-            } else if (getString(R.string.select_a_video).equals(s)) {
-                chooseVideo();
-            } else if (getString(R.string.post_it).equals(s)) {
-                if (mSelectedVideo != null && mSelectedImage != null) {
-                    postVideo(mBtn);
-                } else {
-                    throw new IllegalArgumentException("error data uri, mSelectedVideo = " + mSelectedVideo + ", mSelectedImage = " + mSelectedImage);
-                }
-            } else if ((getString(R.string.success_try_refresh).equals(s))) {
-                mBtn.setText(R.string.select_an_image);
-            }
-        });
-    }
-
-    private void chooseImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                PICK_IMAGE);
-    }
-
-    private void chooseVideo() {
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Video"),
-                PICK_VIDEO);
-    }
-
-    private void postVideo(Button mBtn) {
-        mBtn.setText("POSTING...");
-        mBtn.setEnabled(false);
-        RetrofitManager.get(IMiniDouyinService.HOST).create(IMiniDouyinService.class).createVideo("1120171615", "jj", getMultipartFromUri("cover_image", mSelectedImage), getMultipartFromUri("video", mSelectedVideo)).enqueue(new Callback<PostVideoResponse>() {
-            @Override
-            public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response) {
-                String toast;
-                if (response.isSuccessful()) {
-                    toast = "Post Success!";
-                    mBtn.setText(R.string.success_try_refresh);
-                } else {
-                    toast = "Post Failure...";
-                    mBtn.setText(R.string.post_it);
-                }
-                Toast.makeText(cameraActivity.this, toast, Toast.LENGTH_LONG).show();
-                mBtn.setEnabled(true);
-            }
-
-            @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
-                Toast.makeText(cameraActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                mBtn.setText(R.string.post_it);
-                mBtn.setEnabled(true);
-            }
-        });
-    }
-
-    private MultipartBody.Part getMultipartFromUri(String name, Uri uri) {
-        File f = new File(ResourceUtils.getRealPath(cameraActivity.this, uri));
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
-        return MultipartBody.Part.createFormData(name, f.getName(), requestFile);
     }
 
 }
