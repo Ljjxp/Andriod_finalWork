@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
 
@@ -25,43 +26,35 @@
         android:layout_height="50dp"
         android:background="@drawable/shape_button"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center">
 
         <Button
             android:id="@+id/btn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="15dp"
-            android:layout_weight="1"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/picture"
             android:text="@string/select_an_image"
             android:textColor="@android:color/transparent" />
 
         <Button
             android:id="@+id/btn_film"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="0dp"
-            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:background="@drawable/takepicture"
             android:text="Film"
             android:textColor="@android:color/transparent" />
 
         <Button
             android:id="@+id/btn_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="15dp"
-            android:layout_weight="1"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="40dp"
             android:background="@drawable/refresh"
             android:onClick="fetchFeed"
             android:text="@string/refresh_feed"

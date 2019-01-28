@@ -10,7 +10,9 @@
     <SurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
 
 
@@ -61,30 +63,39 @@
 
     </LinearLayout>
 
+    <SeekBar
+        android:id="@+id/sb_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="86dp" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="70dp"
         android:gravity="center"
         android:orientation="horizontal">
-        <SeekBar
-            android:id="@+id/sb_progress"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+
+
         <TextView
             android:id="@+id/tv_current_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="00:00"
-            android:textColor="#FF0000" />
+            android:alpha="0.5"/>
 
         <TextView
             android:id="@+id/tv_total_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="/00:00"
-            android:textColor="#FF0000" />
+            android:textColor="@color/white"
+            android:alpha="0.5"/>
     </LinearLayout>
 
     <com.example.ljj.finalminidowyinapp.clickLove.LoveAnimator
@@ -94,5 +105,20 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp" />
+
+    <Button
+        android:id="@+id/btn_back2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/back"
+        android:text="Back"
+        android:textColor="@android:color/transparent"
+        android:alpha="0.5"/>
 
 </RelativeLayout>

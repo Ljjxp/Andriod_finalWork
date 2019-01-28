@@ -1,6 +1,7 @@
 package com.example.ljj.finalminidowyinapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.ljj.finalminidowyinapp.Adapter.easyAdapter;
-import com.example.ljj.finalminidowyinapp.Adapter.recyclerViewAdapter;
 import com.example.ljj.finalminidowyinapp.bean.Feed;
 import com.example.ljj.finalminidowyinapp.bean.FeedResponse;
 import com.example.ljj.finalminidowyinapp.bean.PostVideoResponse;
@@ -30,10 +29,6 @@ import com.example.ljj.finalminidowyinapp.utils.ResourceUtils;
 import com.example.ljj.finalminidowyinapp.OnClick.RecyclerViewClickListener;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +49,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     private Uri mSelectedVideo;
     public Button mBtn;
     private Button mBtnRefresh;
-
-    private recyclerViewAdapter mAdapter;
-    private easyAdapter mmAdapter;
 
 
     private String[] PERMISSIONS_STORAGE = {
@@ -250,6 +242,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                 mBtnRefresh.setEnabled(true);
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mBtnRefresh.performClick();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBtnRefresh.performClick();
     }
 
 }

@@ -1,10 +1,13 @@
 package com.example.ljj.finalminidowyinapp;
 
+import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -66,6 +69,10 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
                 mCamera.release();
                 mCamera = null;
             }
+        });
+
+        findViewById(R.id.btn_back1).setOnClickListener(v -> {
+            startActivity(new Intent(this,MainActivity.class));
         });
 
 

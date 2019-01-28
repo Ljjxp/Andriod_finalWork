@@ -54,6 +54,9 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
         SurfaceView mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         holder = mSurfaceView.getHolder();
+        findViewById(R.id.btn_back2).setOnClickListener(v -> {
+            startActivity(new Intent(this,MainActivity.class));
+        });
     }
 
     public void start(View v) {
