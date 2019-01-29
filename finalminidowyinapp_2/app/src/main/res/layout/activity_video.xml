@@ -29,6 +29,7 @@
         android:gravity="center">
 
         <Button
+            android:id="@+id/btn_start"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:onClick="start"

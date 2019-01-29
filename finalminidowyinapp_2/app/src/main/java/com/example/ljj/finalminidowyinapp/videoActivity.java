@@ -29,6 +29,7 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     private SeekBar mSeekbar;
     private TextView tvCurrentTime;
     private TextView tvTotalTime;
+    private Button button;
 
 
     private final int NORMAL = 0;
@@ -57,6 +58,7 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         findViewById(R.id.btn_back2).setOnClickListener(v -> {
             startActivity(new Intent(this,MainActivity.class));
         });
+        button = findViewById(R.id.btn_start);
     }
 
     public void start(View v) {
@@ -182,4 +184,5 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         }
 
     }
+
 }
