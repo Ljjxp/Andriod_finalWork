@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
     private void initFilm() {
         findViewById(R.id.btn_film).setOnClickListener(v -> {
-            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
             startActivity(new Intent(MainActivity.this, cameraActivity.class));
         });
     }
@@ -288,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     @Override
     protected void onStart() {
         super.onStart();
+        ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
         mBtnRefresh.performClick();
     }
 

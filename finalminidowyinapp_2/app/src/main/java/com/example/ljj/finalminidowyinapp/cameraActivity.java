@@ -6,13 +6,17 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.telecom.Call;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -41,6 +45,7 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
 
     private int rotationDegree = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,11 +119,22 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
                 mCamera.startPreview();
             };
         });
+        findViewById(R.id.btn_picture).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.setBackgroundResource(R.drawable.pic_take_red);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.pic_take);
+                }
+                return false;
+            }
+        });
 
         findViewById(R.id.btn_record).setOnClickListener(v -> {
             Button bt = findViewById(R.id.btn_record);
             if (isRecording) {
-                bt.setTextColor(Color.rgb(255,255,255));
+                bt.setBackground(this.getResources().getDrawable(R.drawable.video_take));
                 mMediaRecorder.stop();
                 mMediaRecorder.reset();
                 mMediaRecorder.release();
@@ -126,7 +142,7 @@ public class cameraActivity extends AppCompatActivity implements SurfaceHolder.C
                 mCamera.lock();
                 isRecording = false;
             } else {
-                bt.setTextColor(Color.rgb(255,22,22));
+                bt.setBackground(this.getResources().getDrawable(R.drawable.video_take_red));
                 mMediaRecorder = new MediaRecorder();
                 mCamera.unlock();
                 mMediaRecorder.setCamera(mCamera);
