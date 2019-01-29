@@ -144,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                 Glide.with(iv.getContext()).load(mFeeds.get(i).getImage_url()).into(iv);
                 TextView tx = viewHolder.itemView.findViewById(R.id.zz_name_2);
                 tx.setText("@ " + mFeeds.get(i).getUserName());
+                ImageView iv_heart = viewHolder.itemView.findViewById(R.id.heart);
+                iv_heart.setImageDrawable(MainActivity.this.getResources().getDrawable(R.drawable.heart_white));
+
             }
 
             @Override public int getItemCount() {
