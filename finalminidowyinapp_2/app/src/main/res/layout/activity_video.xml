@@ -38,6 +38,7 @@
             android:background="@drawable/play" />
 
         <Button
+            android:id="@+id/btn_vpause"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:onClick="pause"
@@ -46,6 +47,7 @@
             android:background="@drawable/pause" />
 
         <Button
+            android:id="@+id/btn_vstop"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:onClick="stop"
@@ -54,6 +56,7 @@
             android:background="@drawable/stop" />
 
         <Button
+            android:id="@+id/btn_vrestart"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:onClick="restart"

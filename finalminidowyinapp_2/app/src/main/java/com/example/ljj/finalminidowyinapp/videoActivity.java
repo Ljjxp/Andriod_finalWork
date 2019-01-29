@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -59,6 +60,50 @@ public class videoActivity extends AppCompatActivity implements SeekBar.OnSeekBa
             startActivity(new Intent(this,MainActivity.class));
         });
         button = findViewById(R.id.btn_start);
+        findViewById(R.id.btn_start).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.setBackgroundResource(R.drawable.play_touch);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.play);
+                }
+                return false;
+            }
+        });
+        findViewById(R.id.btn_vpause).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.setBackgroundResource(R.drawable.pause_touch);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.pause);
+                }
+                return false;
+            }
+        });
+        findViewById(R.id.btn_vstop).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.setBackgroundResource(R.drawable.stop_touch);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.stop);
+                }
+                return false;
+            }
+        });
+        findViewById(R.id.btn_vrestart).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.setBackgroundResource(R.drawable.restart_touch);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.restart);
+                }
+                return false;
+            }
+        });
     }
 
     public void start(View v) {
